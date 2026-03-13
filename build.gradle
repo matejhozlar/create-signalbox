@@ -27,7 +27,17 @@ sourceSets.main.resources {
 }
 
 repositories {
-    // Add here additional repositories if required by some of the dependencies below.
+    maven { url = "https://maven.createmod.net" }
+    maven { url = "https://mvn.devos.one/snapshots" }
+    maven { url = "https://maven.blamejared.com" }
+    maven { url = "https://www.cursemaven.com" }
+    maven { url = "https://api.modrinth.com/maven" }
+    maven { url = "https://modmaven.dev" }
+    maven { url = "https://maven.architectury.dev" }
+    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven" }
+    maven { url = "https://maven.ftb.dev/releases" }
+    maven { url = "https://maven.neoforged.net/#/releases/" }
+    maven { url = "https://maven.theillusivec4.top/" }
 }
 
 base {
@@ -118,27 +128,16 @@ configurations {
 }
 
 dependencies {
-    // Example optional mod dependency with JEI
-    // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
-    // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
-    // compileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
-    // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
-    // localRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
+    // Create mod - optional dependency
+    compileOnly "com.simibubi.create:create-${minecraft_version}:${create_version}:slim"
+    localRuntime("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") {
+        exclude group: 'maven.modrinth', module: 'journeymap'
+        exclude group: 'info.journeymap'
+        exclude group: 'cc.tweaked'
+    }
 
-    // Example mod dependency using a mod jar from ./libs with a flat dir repository
-    // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
-    // The group id is ignored when searching -- in this case, it is "blank"
-    // implementation "blank:coolmod-${mc_version}:${coolmod_version}"
-
-    // Example mod dependency using a file as dependency
-    // implementation files("libs/coolmod-${mc_version}-${coolmod_version}.jar")
-
-    // Example project dependency using a sister or child project:
-    // implementation project(":myproject")
-
-    // For more info:
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    // Flywheel - required by Create at runtime
+    localRuntime "dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:1.0.6"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -153,6 +152,8 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_name               : mod_name,
             mod_license            : mod_license,
             mod_version            : mod_version,
+            create_version         : create_version,
+            create_version_range   : create_version_range,
     ]
     inputs.properties replaceProperties
     expand replaceProperties

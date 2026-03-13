@@ -50,8 +50,8 @@ Create addon, that allows sending configurable requests to webhooks or APIs with
 '''
 
 # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.
-#[[mixins]]
-#config="${mod_id}.mixins.json"
+[[mixins]]
+config="${mod_id}.mixins.json"
 
 # The [[accessTransformers]] block allows you to declare where your AT file is.
 # If this block is omitted, a fallback attempt will be made to load an AT from META-INF/accesstransformer.cfg
@@ -91,5 +91,14 @@ Create addon, that allows sending configurable requests to webhooks or APIs with
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares
 # that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't
 # stop your mod loading on the server for example.
+# Create mod - optional dependency
+[[dependencies.${mod_id}]]
+    modId="create"
+    type="optional"
+    reason="Required for train crash notifications"
+    versionRange="${create_version_range}"
+    ordering="AFTER"
+    side="BOTH"
+
 #[features.${mod_id}]
 #openGLVersion="[3.2,)"

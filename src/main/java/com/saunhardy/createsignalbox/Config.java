@@ -1,42 +1,29 @@
 package com.saunhardy.createsignalbox;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-// An example config class. This is not required, but it's a good idea to have one to keep your config organized.
-// Demonstrates how to use Neo's config APIs
 public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-    public static final ModConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER
-            .comment("Whether to log the dirt block on common setup")
-            .define("logDirtBlock", true);
+    public static final ModConfigSpec.ConfigValue<String> WEBHOOK_URL = BUILDER
+            .comment("The URL to send notifications to (Discord webhook URL or custom API endpoint)")
+            .define("webhookUrl", "");
 
-    public static final ModConfigSpec.IntValue MAGIC_NUMBER = BUILDER
-            .comment("A magic number")
-            .defineInRange("magicNumber", 42, 0, Integer.MAX_VALUE);
+    public static final ModConfigSpec.BooleanValue USE_DISCORD_FORMAT = BUILDER
+            .comment("When true, formats payloads as Discord webhook embeds. When false, sends raw JSON.")
+            .define("useDiscordFormat", true);
 
-    public static final ModConfigSpec.ConfigValue<String> MAGIC_NUMBER_INTRODUCTION = BUILDER
-            .comment("What you want the introduction message to be for the magic number")
-            .define("magicNumberIntroduction", "The magic number is... ");
+    public static final ModConfigSpec.IntValue TIMEOUT_MS = BUILDER
+            .comment("HTTP request timeout in milliseconds")
+            .defineInRange("timeoutMs", 5000, 1000, 30000);
 
-    // a list of strings that are treated as resource locations for items
-    public static final ModConfigSpec.ConfigValue<List<? extends String>> ITEM_STRINGS = BUILDER
-            .comment("A list of items to log on common setup.")
-            .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), () -> "", Config::validateItemName);
+    public static final ModConfigSpec.ConfigValue<String> SERVER_NAME = BUILDER
+            .comment("Optional server name included in notifications (leave empty to omit)")
+            .define("serverName", "");
+
+    public static final ModConfigSpec.BooleanValue TRAIN_CRASH_ENABLED = BUILDER
+            .comment("Enable train crash notifications (requires Create mod)")
+            .define("trainCrashEnabled", true);
 
     static final ModConfigSpec SPEC = BUILDER.build();
-
-    private static boolean validateItemName(final Object obj) {
-        return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(itemName));
-    }
 }

@@ -1,0 +1,10 @@
+{
+    "required": false,
+    "package": "com.saunhardy.createsignalbox.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "plugin": "com.saunhardy.createsignalbox.mixin.CreateMixinPlugin",
+    "mixins": [
+        "TrainCrashMixin"
+    ],
+    "minVersion": "0.8"
+}

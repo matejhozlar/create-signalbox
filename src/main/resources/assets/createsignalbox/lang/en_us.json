@@ -1,13 +1,10 @@
 {
-  "itemGroup.createsignalbox": "Example Mod Tab",
-  "block.createsignalbox.example_block": "Example Block",
-  "item.createsignalbox.example_item": "Example Item",
-
   "createsignalbox.configuration.title": "Create: Signalbox Configs",
   "createsignalbox.configuration.section.createsignalbox.common.toml": "Create: Signalbox Configs",
   "createsignalbox.configuration.section.createsignalbox.common.toml.title": "Create: Signalbox Configs",
-  "createsignalbox.configuration.items": "Item List",
-  "createsignalbox.configuration.logDirtBlock": "Log Dirt Block",
-  "createsignalbox.configuration.magicNumberIntroduction": "Magic Number Text",
-  "createsignalbox.configuration.magicNumber": "Magic Number"
+  "createsignalbox.configuration.webhookUrl": "Webhook URL",
+  "createsignalbox.configuration.useDiscordFormat": "Use Discord Format",
+  "createsignalbox.configuration.timeoutMs": "Request Timeout (ms)",
+  "createsignalbox.configuration.serverName": "Server Name",
+  "createsignalbox.configuration.trainCrashEnabled": "Train Crash Notifications"
 }
