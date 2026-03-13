@@ -73,7 +73,7 @@ When `useDiscordFormat` is enabled, crash reports are sent as a red Discord embe
 | Carriages | Number of carriages |
 | Dimension | World dimension |
 | Position | X, Y, Z coordinates |
-| Owner | Train owner UUID |
+| Owner | Train owner (resolved name, falls back to UUID) |
 | Driver | Player driving the train |
 | Passengers | Other players aboard |
 | Backwards Driver | Player driving in reverse |
