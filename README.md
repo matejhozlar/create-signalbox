@@ -3,6 +3,7 @@
 ![Minecraft](https://img.shields.io/badge/Minecraft-1.21.1-5E7C16?logo=minecraft&logoColor=white)
 ![NeoForge](https://img.shields.io/badge/NeoForge-21.1.219-orange)
 ![Create](https://img.shields.io/badge/Create-Optional-blue)
+[![Wiki](https://img.shields.io/badge/Wiki-GitHub-lightgrey?logo=github)](https://github.com/saunhardy/create-signalbox/wiki)
 
 **Create: Signalbox** is a NeoForge mod that sends configurable webhook notifications for in-game events from the [Create](https://github.com/Creators-of-Create/Create) mod. When a train crashes, the mod automatically sends a detailed report to a Discord webhook or any custom API endpoint — no backend server required.
 
