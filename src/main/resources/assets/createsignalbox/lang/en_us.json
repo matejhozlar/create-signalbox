@@ -8,11 +8,21 @@
   "createsignalbox.configuration.section.createsignalbox.common.toml.events.title": "Event Settings",
   "createsignalbox.configuration.section.createsignalbox.common.toml.events.trainCrash": "Train Crash",
   "createsignalbox.configuration.section.createsignalbox.common.toml.events.trainCrash.title": "Train Crash Settings",
+  "createsignalbox.configuration.section.createsignalbox.common.toml.events.trainDerail": "Train Derailment",
+  "createsignalbox.configuration.section.createsignalbox.common.toml.events.trainDerail.title": "Train Derailment Settings",
+  "createsignalbox.configuration.section.createsignalbox.common.toml.events.trainLifecycle": "Train Lifecycle",
+  "createsignalbox.configuration.section.createsignalbox.common.toml.events.trainLifecycle.title": "Train Lifecycle Settings",
   "createsignalbox.configuration.webhook.webhookUrl": "Webhook URL",
   "createsignalbox.configuration.webhook.useDiscordFormat": "Use Discord Format",
   "createsignalbox.configuration.webhook.timeoutMs": "Request Timeout (ms)",
   "createsignalbox.configuration.webhook.serverName": "Server Name",
   "createsignalbox.configuration.events.trainCrash.enabled": "Train Crash Notifications",
   "createsignalbox.configuration.events.trainCrash.cooldownSeconds": "Cooldown (seconds)",
-  "createsignalbox.configuration.events.trainCrash.webhookUrl": "Webhook URL Override"
+  "createsignalbox.configuration.events.trainCrash.webhookUrl": "Webhook URL Override",
+  "createsignalbox.configuration.events.trainDerail.enabled": "Train Derailment Notifications",
+  "createsignalbox.configuration.events.trainDerail.cooldownSeconds": "Cooldown (seconds)",
+  "createsignalbox.configuration.events.trainDerail.webhookUrl": "Webhook URL Override",
+  "createsignalbox.configuration.events.trainLifecycle.creationEnabled": "Train Creation Notifications",
+  "createsignalbox.configuration.events.trainLifecycle.deletionEnabled": "Train Deletion Notifications",
+  "createsignalbox.configuration.events.trainLifecycle.webhookUrl": "Webhook URL Override"
 }

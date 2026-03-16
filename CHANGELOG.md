@@ -1,19 +1,16 @@
-# 1.1.0
+# 1.2.0
 
-### Config Refactor & Cooldown
+### New Event Types & Commands
 
-- Restructured config into `[webhook]` and `[events.trainCrash]` TOML sections
-- Extracted shared webhook sender for future event types
-- Added per-train crash notification cooldown (`cooldownSeconds`, default 60s)
+- Train derailment notifications (non-crash derailments from stress or migration failures)
+- Train lifecycle notifications (assembled/disassembled)
+- `/signalbox test` command to verify webhook connectivity
+- Per-event webhook URL overrides — send different events to different channels
+- Colour-coded Discord embeds: red for crashes, yellow for derailments, green for creation, red for removal
 
-# 1.0.0
+### Config Changes
 
-### Initial Release
-
-- Train crash notifications via Mixin hook into Create's `Train.crash()`
-- Discord webhook support with rich embeds (train name, speed, position, driver, passengers, etc.)
-- Custom API support with raw JSON payloads
-- Configurable webhook URL, timeout, server name, and Discord/raw format toggle
-- UUID-to-name resolution via profile cache with UUID fallback
-- Conditional mixin loading — only applies when Create is present
-- In-game config screen
+- Config is now organized into `[webhook]` and `[events.*]` TOML sections
+- Each event type has its own section with independent enabled, cooldown, and webhook URL settings
+- Shared webhook sender extracted for all event types
+- Per-train crash notification cooldown (`cooldownSeconds`, default 60s)

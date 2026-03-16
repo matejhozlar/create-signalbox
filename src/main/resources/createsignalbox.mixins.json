@@ -4,7 +4,9 @@
     "compatibilityLevel": "JAVA_21",
     "plugin": "com.saunhardy.createsignalbox.mixin.CreateMixinPlugin",
     "mixins": [
-        "TrainCrashMixin"
+        "TrainCrashMixin",
+        "TrainDerailMixin",
+        "TrainLifecycleMixin"
     ],
     "minVersion": "0.8"
 }

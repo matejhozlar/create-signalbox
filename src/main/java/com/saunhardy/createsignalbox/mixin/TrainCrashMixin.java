@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.simibubi.create.content.trains.entity.Carriage;
 import com.simibubi.create.content.trains.entity.Train;
 import com.saunhardy.createsignalbox.events.TrainCrashHandler;
+import com.saunhardy.createsignalbox.events.TrainDerailHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.players.GameProfileCache;
@@ -33,6 +34,8 @@ public abstract class TrainCrashMixin {
     @Inject(method = "crash", at = @At("HEAD"), remap = false)
     private void createsignalbox$onTrainCrash(CallbackInfo ci) {
         if (this.derailed) return;
+
+        TrainDerailHandler.markCrashed(this.id);
 
         String trainName = this.name != null ? this.name.getString() : "Unknown";
         int carriageCount = this.carriages != null ? this.carriages.size() : 0;
