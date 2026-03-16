@@ -1,6 +1,12 @@
-# Changelog
+# 1.1.0
 
-## 1.0.0
+### Config Refactor & Cooldown
+
+- Restructured config into `[webhook]` and `[events.trainCrash]` TOML sections
+- Extracted shared webhook sender for future event types
+- Added per-train crash notification cooldown (`cooldownSeconds`, default 60s)
+
+# 1.0.0
 
 ### Initial Release
 

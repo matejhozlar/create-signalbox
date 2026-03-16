@@ -9,9 +9,11 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TrainCrashHandler {
     private static final Gson GSON = new Gson();
+    private static final Map<UUID, Long> COOLDOWNS = new ConcurrentHashMap<>();
 
     public record PlayerInfo(UUID uuid, @Nullable String name, boolean isDriver) {}
 
@@ -26,6 +28,14 @@ public class TrainCrashHandler {
 
         String webhookUrl = SignalboxConfig.WEBHOOK.webhookUrl.get();
         if (webhookUrl == null || webhookUrl.isBlank()) return;
+
+        int cooldown = SignalboxConfig.TRAIN_CRASH.cooldownSeconds.get();
+        if (cooldown > 0) {
+            long now = System.currentTimeMillis();
+            Long lastReport = COOLDOWNS.get(trainId);
+            if (lastReport != null && (now - lastReport) < cooldown * 1000L) return;
+            COOLDOWNS.put(trainId, now);
+        }
 
         String json;
         if (SignalboxConfig.WEBHOOK.useDiscordFormat.get()) {

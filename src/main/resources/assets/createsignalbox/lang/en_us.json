@@ -12,5 +12,6 @@
   "createsignalbox.configuration.webhook.useDiscordFormat": "Use Discord Format",
   "createsignalbox.configuration.webhook.timeoutMs": "Request Timeout (ms)",
   "createsignalbox.configuration.webhook.serverName": "Server Name",
-  "createsignalbox.configuration.events.trainCrash.enabled": "Train Crash Notifications"
+  "createsignalbox.configuration.events.trainCrash.enabled": "Train Crash Notifications",
+  "createsignalbox.configuration.events.trainCrash.cooldownSeconds": "Cooldown (seconds)"
 }

@@ -63,6 +63,7 @@ Upon first launch, the mod generates a config file at:
 | Option | Default | Description |
 |---|---|---|
 | `events.trainCrash.enabled` | `true` | Toggle train crash notifications |
+| `events.trainCrash.cooldownSeconds` | `60` | Cooldown before the same train can trigger another notification (0 to disable) |
 
 All settings are also accessible in-game via the mod config screen (Mods → Create: Signalbox → Config).
 
