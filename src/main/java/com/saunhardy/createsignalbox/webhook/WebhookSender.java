@@ -19,10 +19,9 @@ public class WebhookSender {
         return t;
     });
 
-    public static void send(String json, String eventDescription) {
+    public static void send(String webhookUrl, String json, String eventDescription) {
         EXECUTOR.submit(() -> {
             try {
-                String webhookUrl = SignalboxConfig.WEBHOOK.webhookUrl.get();
                 URL url = URI.create(webhookUrl).toURL();
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 try {

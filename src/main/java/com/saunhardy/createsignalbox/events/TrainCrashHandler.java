@@ -26,7 +26,10 @@ public class TrainCrashHandler {
                                    @Nullable String backwardsDriverName) {
         if (!SignalboxConfig.TRAIN_CRASH.enabled.get()) return;
 
-        String webhookUrl = SignalboxConfig.WEBHOOK.webhookUrl.get();
+        String webhookUrl = SignalboxConfig.TRAIN_CRASH.webhookUrl.get();
+        if (webhookUrl == null || webhookUrl.isBlank()) {
+            webhookUrl = SignalboxConfig.WEBHOOK.webhookUrl.get();
+        }
         if (webhookUrl == null || webhookUrl.isBlank()) return;
 
         int cooldown = SignalboxConfig.TRAIN_CRASH.cooldownSeconds.get();
@@ -48,7 +51,7 @@ public class TrainCrashHandler {
                     backwardsDriverUuid, backwardsDriverName);
         }
 
-        WebhookSender.send(json, String.format("train crash: %s (%s)", trainName, trainId));
+        WebhookSender.send(webhookUrl, json, String.format("train crash: %s (%s)", trainName, trainId));
     }
 
     private static String buildDiscordPayload(UUID trainId, String trainName, double speed,

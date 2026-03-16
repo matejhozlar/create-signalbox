@@ -13,5 +13,6 @@
   "createsignalbox.configuration.webhook.timeoutMs": "Request Timeout (ms)",
   "createsignalbox.configuration.webhook.serverName": "Server Name",
   "createsignalbox.configuration.events.trainCrash.enabled": "Train Crash Notifications",
-  "createsignalbox.configuration.events.trainCrash.cooldownSeconds": "Cooldown (seconds)"
+  "createsignalbox.configuration.events.trainCrash.cooldownSeconds": "Cooldown (seconds)",
+  "createsignalbox.configuration.events.trainCrash.webhookUrl": "Webhook URL Override"
 }
