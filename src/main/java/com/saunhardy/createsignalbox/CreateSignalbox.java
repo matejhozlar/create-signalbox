@@ -1,6 +1,7 @@
 package com.saunhardy.createsignalbox;
 
 import com.mojang.logging.LogUtils;
+import com.saunhardy.createsignalbox.config.SignalboxConfig;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -13,6 +14,6 @@ public class CreateSignalbox {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public CreateSignalbox(IEventBus modEventBus, ModContainer modContainer) {
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, SignalboxConfig.SPEC);
     }
 }

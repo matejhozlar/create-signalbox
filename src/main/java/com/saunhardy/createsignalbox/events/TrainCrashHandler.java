@@ -1,29 +1,17 @@
 package com.saunhardy.createsignalbox.events;
 
 import com.google.gson.Gson;
-import com.mojang.logging.LogUtils;
-import com.saunhardy.createsignalbox.Config;
-import org.slf4j.Logger;
+import com.saunhardy.createsignalbox.config.SignalboxConfig;
+import com.saunhardy.createsignalbox.webhook.WebhookSender;
 
 import javax.annotation.Nullable;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class TrainCrashHandler {
-    private static final Logger LOGGER = LogUtils.getLogger();
     private static final Gson GSON = new Gson();
-    private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2, r -> {
-        Thread t = new Thread(r, "Signalbox-Webhook");
-        t.setDaemon(true);
-        return t;
-    });
 
     public record PlayerInfo(UUID uuid, @Nullable String name, boolean isDriver) {}
 
@@ -34,50 +22,23 @@ public class TrainCrashHandler {
                                    List<PlayerInfo> passengers,
                                    @Nullable UUID backwardsDriverUuid,
                                    @Nullable String backwardsDriverName) {
-        if (!Config.TRAIN_CRASH_ENABLED.get()) return;
+        if (!SignalboxConfig.TRAIN_CRASH.enabled.get()) return;
 
-        String webhookUrl = Config.WEBHOOK_URL.get();
+        String webhookUrl = SignalboxConfig.WEBHOOK.webhookUrl.get();
         if (webhookUrl == null || webhookUrl.isBlank()) return;
 
-        EXECUTOR.submit(() -> {
-            try {
-                String json;
-                if (Config.USE_DISCORD_FORMAT.get()) {
-                    json = buildDiscordPayload(trainId, trainName, speed, carriageCount,
-                            position, dimension, owner, ownerName, driverUuid, passengers,
-                            backwardsDriverUuid, backwardsDriverName);
-                } else {
-                    json = buildRawPayload(trainId, trainName, speed, carriageCount,
-                            position, dimension, owner, ownerName, driverUuid, passengers,
-                            backwardsDriverUuid, backwardsDriverName);
-                }
+        String json;
+        if (SignalboxConfig.WEBHOOK.useDiscordFormat.get()) {
+            json = buildDiscordPayload(trainId, trainName, speed, carriageCount,
+                    position, dimension, owner, ownerName, driverUuid, passengers,
+                    backwardsDriverUuid, backwardsDriverName);
+        } else {
+            json = buildRawPayload(trainId, trainName, speed, carriageCount,
+                    position, dimension, owner, ownerName, driverUuid, passengers,
+                    backwardsDriverUuid, backwardsDriverName);
+        }
 
-                URL url = URI.create(webhookUrl).toURL();
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                try {
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json");
-                    conn.setDoOutput(true);
-                    conn.setConnectTimeout(Config.TIMEOUT_MS.get());
-                    conn.setReadTimeout(Config.TIMEOUT_MS.get());
-
-                    try (var os = conn.getOutputStream()) {
-                        os.write(json.getBytes());
-                    }
-
-                    int responseCode = conn.getResponseCode();
-                    if (responseCode >= 200 && responseCode < 300) {
-                        LOGGER.info("Train crash reported: {} ({})", trainName, trainId);
-                    } else {
-                        LOGGER.warn("Train crash report failed with status {}", responseCode);
-                    }
-                } finally {
-                    conn.disconnect();
-                }
-            } catch (Exception e) {
-                LOGGER.error("Failed to report train crash: {}", e.getMessage());
-            }
-        });
+        WebhookSender.send(json, String.format("train crash: %s (%s)", trainName, trainId));
     }
 
     private static String buildDiscordPayload(UUID trainId, String trainName, double speed,
@@ -145,8 +106,7 @@ public class TrainCrashHandler {
         embed.put("timestamp", DateTimeFormatter.ISO_INSTANT.format(
                 Instant.now().atOffset(ZoneOffset.UTC)));
 
-        // Add footer with server name if configured
-        String serverName = Config.SERVER_NAME.get();
+        String serverName = SignalboxConfig.WEBHOOK.serverName.get();
         if (serverName != null && !serverName.isBlank()) {
             Map<String, String> footer = new LinkedHashMap<>();
             footer.put("text", serverName);
@@ -214,7 +174,7 @@ public class TrainCrashHandler {
             payload.put("backwardsDriver", bd);
         }
 
-        String serverName = Config.SERVER_NAME.get();
+        String serverName = SignalboxConfig.WEBHOOK.serverName.get();
         if (serverName != null && !serverName.isBlank()) {
             payload.put("serverName", serverName);
         }
