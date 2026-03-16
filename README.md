@@ -49,13 +49,20 @@
 Upon first launch, the mod generates a config file at:
 `/serverconfig/createsignalbox-common.toml`
 
+### Webhook Settings (`[webhook]`)
+
 | Option | Default | Description |
 |---|---|---|
 | `webhookUrl` | `""` | Discord webhook URL or custom API endpoint |
 | `useDiscordFormat` | `true` | `true` = Discord embed, `false` = raw JSON |
 | `timeoutMs` | `5000` | HTTP request timeout (1000–30000 ms) |
 | `serverName` | `""` | Optional server name shown in notifications |
-| `trainCrashEnabled` | `true` | Toggle train crash notifications |
+
+### Event Settings (`[events]`)
+
+| Option | Default | Description |
+|---|---|---|
+| `events.trainCrash.enabled` | `true` | Toggle train crash notifications |
 
 All settings are also accessible in-game via the mod config screen (Mods → Create: Signalbox → Config).
 
