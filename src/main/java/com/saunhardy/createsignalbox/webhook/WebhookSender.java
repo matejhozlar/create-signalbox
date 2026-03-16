@@ -4,12 +4,14 @@ import com.mojang.logging.LogUtils;
 import com.saunhardy.createsignalbox.config.SignalboxConfig;
 import org.slf4j.Logger;
 
+import javax.annotation.Nullable;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 public class WebhookSender {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -20,7 +22,13 @@ public class WebhookSender {
     });
 
     public static void send(String webhookUrl, String json, String eventDescription) {
+        send(webhookUrl, json, eventDescription, null);
+    }
+
+    public static void send(String webhookUrl, String json, String eventDescription,
+                            @Nullable Consumer<Boolean> callback) {
         EXECUTOR.submit(() -> {
+            boolean success = false;
             try {
                 URL url = URI.create(webhookUrl).toURL();
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -38,6 +46,7 @@ public class WebhookSender {
                     int responseCode = conn.getResponseCode();
                     if (responseCode >= 200 && responseCode < 300) {
                         LOGGER.info("Webhook sent: {}", eventDescription);
+                        success = true;
                     } else {
                         LOGGER.warn("Webhook failed with status {}: {}", responseCode, eventDescription);
                     }
@@ -46,6 +55,10 @@ public class WebhookSender {
                 }
             } catch (Exception e) {
                 LOGGER.error("Failed to send webhook ({}): {}", eventDescription, e.getMessage());
+            }
+
+            if (callback != null) {
+                callback.accept(success);
             }
         });
     }
