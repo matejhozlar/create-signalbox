@@ -2,7 +2,9 @@ package com.saunhardy.createsignalbox.mixin;
 
 import com.mojang.authlib.GameProfile;
 import com.simibubi.create.content.trains.entity.Carriage;
+import com.simibubi.create.content.trains.entity.TravellingPoint;
 import com.simibubi.create.content.trains.entity.Train;
+import com.simibubi.create.content.trains.graph.TrackGraph;
 import com.saunhardy.createsignalbox.events.TrainDerailHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -30,6 +32,7 @@ public abstract class TrainDerailMixin {
     @Shadow public boolean derailed;
     @Shadow public List<Carriage> carriages;
     @Shadow public @Nullable UUID owner;
+    @Shadow public TrackGraph graph;
 
     @Unique
     private boolean createsignalbox$wasDerailed;
@@ -52,34 +55,53 @@ public abstract class TrainDerailMixin {
         String ownerName = null;
 
         if (this.carriages != null && !this.carriages.isEmpty()) {
-            try {
-                final double[][] posHolder = {null};
-                final String[] dimHolder = {null};
-                final MinecraftServer[] serverHolder = {null};
+            final double[][] posHolder = {null};
+            final String[] dimHolder = {null};
+            final MinecraftServer[] serverHolder = {null};
 
-                this.carriages.get(0).forEachPresentEntity(entity -> {
-                    Vec3 entityPos = entity.position();
-                    posHolder[0] = new double[]{entityPos.x, entityPos.y, entityPos.z};
-                    dimHolder[0] = entity.level().dimension().location().toString();
-                    serverHolder[0] = entity.level().getServer();
-                });
-
-                pos = posHolder[0];
-                dimension = dimHolder[0];
-
-                if (serverHolder[0] != null && this.owner != null) {
-                    GameProfileCache cache = serverHolder[0].getProfileCache();
-                    if (cache != null) {
-                        try {
-                            Optional<GameProfile> profile = cache.get(this.owner);
-                            if (profile.isPresent()) {
-                                ownerName = profile.get().getName();
-                            }
-                        } catch (Exception ignored) {
+            for (Carriage carriage : this.carriages) {
+                try {
+                    carriage.forEachPresentEntity(entity -> {
+                        if (posHolder[0] == null) {
+                            Vec3 entityPos = entity.position();
+                            posHolder[0] = new double[]{entityPos.x, entityPos.y, entityPos.z};
+                            dimHolder[0] = entity.level().dimension().location().toString();
                         }
+                        if (serverHolder[0] == null) {
+                            serverHolder[0] = entity.level().getServer();
+                        }
+                    });
+                } catch (Exception ignored) {
+                }
+            }
+
+            pos = posHolder[0];
+            dimension = dimHolder[0];
+
+            // Fallback: get position from track graph if no entity was loaded
+            if (pos == null && this.graph != null) {
+                try {
+                    TravellingPoint point = this.carriages.get(0).getLeadingPoint();
+                    if (point.node1 != null && point.edge != null) {
+                        Vec3 graphPos = point.getPosition(this.graph);
+                        pos = new double[]{graphPos.x, graphPos.y, graphPos.z};
+                        dimension = point.node1.getLocation().dimension.location().toString();
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+
+            if (serverHolder[0] != null && this.owner != null) {
+                GameProfileCache cache = serverHolder[0].getProfileCache();
+                if (cache != null) {
+                    try {
+                        Optional<GameProfile> profile = cache.get(this.owner);
+                        if (profile.isPresent()) {
+                            ownerName = profile.get().getName();
+                        }
+                    } catch (Exception ignored) {
                     }
                 }
-            } catch (Exception ignored) {
             }
         }
 

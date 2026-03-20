@@ -2,7 +2,9 @@ package com.saunhardy.createsignalbox.mixin;
 
 import com.mojang.authlib.GameProfile;
 import com.simibubi.create.content.trains.entity.Carriage;
+import com.simibubi.create.content.trains.entity.TravellingPoint;
 import com.simibubi.create.content.trains.entity.Train;
+import com.simibubi.create.content.trains.graph.TrackGraph;
 import com.saunhardy.createsignalbox.events.TrainCrashHandler;
 import com.saunhardy.createsignalbox.events.TrainDerailHandler;
 import net.minecraft.network.chat.Component;
@@ -30,6 +32,7 @@ public abstract class TrainCrashMixin {
     @Shadow public List<Carriage> carriages;
     @Shadow public @Nullable UUID owner;
     @Shadow public @Nullable Player backwardsDriver;
+    @Shadow public TrackGraph graph;
 
     @Inject(method = "crash", at = @At("HEAD"), remap = false)
     private void createsignalbox$onTrainCrash(CallbackInfo ci) {
@@ -46,9 +49,18 @@ public abstract class TrainCrashMixin {
         List<TrainCrashHandler.PlayerInfo> passengers = new ArrayList<>();
 
         if (this.carriages != null) {
+            final double[][] posHolder = {null};
+            final String[] dimHolder = {null};
+
             for (Carriage carriage : this.carriages) {
                 try {
                     carriage.forEachPresentEntity(entity -> {
+                        if (posHolder[0] == null) {
+                            Vec3 entityPos = entity.position();
+                            posHolder[0] = new double[]{entityPos.x, entityPos.y, entityPos.z};
+                            dimHolder[0] = entity.level().dimension().location().toString();
+                        }
+
                         Optional<UUID> controlling = entity.getControllingPlayer();
                         if (controlling.isPresent()) {
                             passengers.add(new TrainCrashHandler.PlayerInfo(
@@ -68,19 +80,18 @@ public abstract class TrainCrashMixin {
                 }
             }
 
-            if (!this.carriages.isEmpty()) {
+            pos = posHolder[0];
+            dimension = dimHolder[0];
+
+            // Fallback: get position from track graph if no entity was loaded
+            if (pos == null && this.graph != null) {
                 try {
-                    final double[][] posHolder = {null};
-                    final String[] dimHolder = {null};
-
-                    this.carriages.get(0).forEachPresentEntity(entity -> {
-                        Vec3 entityPos = entity.position();
-                        posHolder[0] = new double[]{entityPos.x, entityPos.y, entityPos.z};
-                        dimHolder[0] = entity.level().dimension().location().toString();
-                    });
-
-                    pos = posHolder[0];
-                    dimension = dimHolder[0];
+                    TravellingPoint point = this.carriages.get(0).getLeadingPoint();
+                    if (point.node1 != null && point.edge != null) {
+                        Vec3 graphPos = point.getPosition(this.graph);
+                        pos = new double[]{graphPos.x, graphPos.y, graphPos.z};
+                        dimension = point.node1.getLocation().dimension.location().toString();
+                    }
                 } catch (Exception ignored) {
                 }
             }
@@ -111,14 +122,17 @@ public abstract class TrainCrashMixin {
         // Resolve any remaining null names via profile cache
         String ownerName = null;
         MinecraftServer server = null;
-        if (this.carriages != null && !this.carriages.isEmpty()) {
-            try {
-                final MinecraftServer[] serverHolder = {null};
-                this.carriages.get(0).forEachPresentEntity(entity ->
-                        serverHolder[0] = entity.level().getServer());
-                server = serverHolder[0];
-            } catch (Exception ignored) {
+        if (this.carriages != null) {
+            final MinecraftServer[] serverHolder = {null};
+            for (Carriage carriage : this.carriages) {
+                if (serverHolder[0] != null) break;
+                try {
+                    carriage.forEachPresentEntity(entity ->
+                            serverHolder[0] = entity.level().getServer());
+                } catch (Exception ignored) {
+                }
             }
+            server = serverHolder[0];
         }
 
         if (server != null) {
