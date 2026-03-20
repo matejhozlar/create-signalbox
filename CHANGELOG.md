@@ -1,16 +1,7 @@
-# 1.2.0
+# 1.2.1
 
-### New Event Types & Commands
+### Bug Fixes
 
-- Train derailment notifications (non-crash derailments from stress or migration failures)
-- Train lifecycle notifications (assembled/disassembled)
-- `/signalbox test` command to verify webhook connectivity
-- Per-event webhook URL overrides — send different events to different channels
-- Colour-coded Discord embeds: red for crashes, yellow for derailments, green for creation, red for removal
-
-### Config Changes
-
-- Config is now organized into `[webhook]` and `[events.*]` TOML sections
-- Each event type has its own section with independent enabled, cooldown, and webhook URL settings
-- Shared webhook sender extracted for all event types
-- Per-train crash notification cooldown (`cooldownSeconds`, default 60s)
+- Fixed crash and derail reports sometimes missing position and dimension data
+- Position now falls back to track graph data when no carriage entity is loaded
+- Server resolution for owner name lookup now tries all carriages instead of only the first
