@@ -24,7 +24,6 @@ out/
 .springBeans
 .sts4-cache
 bin/
-.claude
 !**/src/**/bin/
 
 ### VS Code ###
