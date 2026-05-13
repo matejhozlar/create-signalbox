@@ -2,11 +2,6 @@ name: Publish to CurseForge
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Release'
-        required: true
-        type: string
 
 jobs:
   publish:
@@ -27,15 +22,21 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x gradlew
 
+      - name: Read mod version
+        id: mod
+        run: |
+          version=$(grep -E '^mod_version\s*=' gradle.properties | cut -d'=' -f2 | xargs)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
       - name: Build with Gradle
         run: ./gradlew build
 
       - name: Publish to CurseForge
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          version: ${{ inputs.version }}
+          version: ${{ steps.mod.outputs.version }}
           version-type: release
-          name: "[${{ inputs.version }}] Create: Webhooks"
+          name: "[${{ steps.mod.outputs.version }}] Create: Webhooks"
           changelog-file: CHANGELOG.md
           loaders: neoforge
           game-versions: 1.21.1
