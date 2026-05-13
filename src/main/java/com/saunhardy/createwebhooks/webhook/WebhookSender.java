@@ -1,7 +1,7 @@
-package com.saunhardy.createsignalbox.webhook;
+package com.saunhardy.createwebhooks.webhook;
 
 import com.mojang.logging.LogUtils;
-import com.saunhardy.createsignalbox.config.SignalboxConfig;
+import com.saunhardy.createwebhooks.config.WebhooksConfig;
 import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 public class WebhookSender {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2, r -> {
-        Thread t = new Thread(r, "Signalbox-Webhook");
+        Thread t = new Thread(r, "CreateWebhooks-Webhook");
         t.setDaemon(true);
         return t;
     });
@@ -36,8 +36,8 @@ public class WebhookSender {
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Type", "application/json");
                     conn.setDoOutput(true);
-                    conn.setConnectTimeout(SignalboxConfig.WEBHOOK.timeoutMs.get());
-                    conn.setReadTimeout(SignalboxConfig.WEBHOOK.timeoutMs.get());
+                    conn.setConnectTimeout(WebhooksConfig.WEBHOOK.timeoutMs.get());
+                    conn.setReadTimeout(WebhooksConfig.WEBHOOK.timeoutMs.get());
 
                     try (var os = conn.getOutputStream()) {
                         os.write(json.getBytes(StandardCharsets.UTF_8));

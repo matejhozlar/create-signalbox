@@ -1,8 +1,8 @@
-package com.saunhardy.createsignalbox.events;
+package com.saunhardy.createwebhooks.events;
 
 import com.google.gson.Gson;
-import com.saunhardy.createsignalbox.config.SignalboxConfig;
-import com.saunhardy.createsignalbox.webhook.WebhookSender;
+import com.saunhardy.createwebhooks.config.WebhooksConfig;
+import com.saunhardy.createwebhooks.webhook.WebhookSender;
 
 import javax.annotation.Nullable;
 import java.time.Instant;
@@ -24,15 +24,15 @@ public class TrainCrashHandler {
                                    List<PlayerInfo> passengers,
                                    @Nullable UUID backwardsDriverUuid,
                                    @Nullable String backwardsDriverName) {
-        if (!SignalboxConfig.TRAIN_CRASH.enabled.get()) return;
+        if (!WebhooksConfig.TRAIN_CRASH.enabled.get()) return;
 
-        String webhookUrl = SignalboxConfig.TRAIN_CRASH.webhookUrl.get();
+        String webhookUrl = WebhooksConfig.TRAIN_CRASH.webhookUrl.get();
         if (webhookUrl == null || webhookUrl.isBlank()) {
-            webhookUrl = SignalboxConfig.WEBHOOK.webhookUrl.get();
+            webhookUrl = WebhooksConfig.WEBHOOK.webhookUrl.get();
         }
         if (webhookUrl == null || webhookUrl.isBlank()) return;
 
-        int cooldown = SignalboxConfig.TRAIN_CRASH.cooldownSeconds.get();
+        int cooldown = WebhooksConfig.TRAIN_CRASH.cooldownSeconds.get();
         if (cooldown > 0) {
             long now = System.currentTimeMillis();
             Long lastReport = COOLDOWNS.get(trainId);
@@ -41,7 +41,7 @@ public class TrainCrashHandler {
         }
 
         String json;
-        if (SignalboxConfig.WEBHOOK.useDiscordFormat.get()) {
+        if (WebhooksConfig.WEBHOOK.useDiscordFormat.get()) {
             json = buildDiscordPayload(trainId, trainName, speed, carriageCount,
                     position, dimension, owner, ownerName, driverUuid, passengers,
                     backwardsDriverUuid, backwardsDriverName);
@@ -119,7 +119,7 @@ public class TrainCrashHandler {
         embed.put("timestamp", DateTimeFormatter.ISO_INSTANT.format(
                 Instant.now().atOffset(ZoneOffset.UTC)));
 
-        String serverName = SignalboxConfig.WEBHOOK.serverName.get();
+        String serverName = WebhooksConfig.WEBHOOK.serverName.get();
         if (serverName != null && !serverName.isBlank()) {
             Map<String, String> footer = new LinkedHashMap<>();
             footer.put("text", serverName);
@@ -187,7 +187,7 @@ public class TrainCrashHandler {
             payload.put("backwardsDriver", bd);
         }
 
-        String serverName = SignalboxConfig.WEBHOOK.serverName.get();
+        String serverName = WebhooksConfig.WEBHOOK.serverName.get();
         if (serverName != null && !serverName.isBlank()) {
             payload.put("serverName", serverName);
         }

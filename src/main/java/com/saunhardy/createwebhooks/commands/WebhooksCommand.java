@@ -1,10 +1,10 @@
-package com.saunhardy.createsignalbox.commands;
+package com.saunhardy.createwebhooks.commands;
 
 import com.google.gson.Gson;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import com.saunhardy.createsignalbox.config.SignalboxConfig;
-import com.saunhardy.createsignalbox.webhook.WebhookSender;
+import com.saunhardy.createwebhooks.config.WebhooksConfig;
+import com.saunhardy.createwebhooks.webhook.WebhookSender;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -16,27 +16,27 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SignalboxCommand {
+public class WebhooksCommand {
     private static final Gson GSON = new Gson();
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("signalbox")
+        dispatcher.register(Commands.literal("webhooks")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.literal("test")
-                        .executes(SignalboxCommand::executeTest)));
+                        .executes(WebhooksCommand::executeTest)));
     }
 
     private static int executeTest(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
 
-        String webhookUrl = SignalboxConfig.WEBHOOK.webhookUrl.get();
+        String webhookUrl = WebhooksConfig.WEBHOOK.webhookUrl.get();
         if (webhookUrl == null || webhookUrl.isBlank()) {
             source.sendFailure(Component.literal("No webhook URL configured. Set one in the config first."));
             return 0;
         }
 
         String json;
-        if (SignalboxConfig.WEBHOOK.useDiscordFormat.get()) {
+        if (WebhooksConfig.WEBHOOK.useDiscordFormat.get()) {
             json = buildTestDiscordPayload();
         } else {
             json = buildTestRawPayload();
@@ -60,12 +60,12 @@ public class SignalboxCommand {
     private static String buildTestDiscordPayload() {
         Map<String, Object> embed = new LinkedHashMap<>();
         embed.put("title", "Test Notification");
-        embed.put("description", "This is a test notification from Create: Signalbox. If you see this, your webhook is configured correctly!");
+        embed.put("description", "This is a test notification from Create: Webhooks. If you see this, your webhook is configured correctly!");
         embed.put("color", 0x5865F2);
         embed.put("timestamp", DateTimeFormatter.ISO_INSTANT.format(
                 Instant.now().atOffset(ZoneOffset.UTC)));
 
-        String serverName = SignalboxConfig.WEBHOOK.serverName.get();
+        String serverName = WebhooksConfig.WEBHOOK.serverName.get();
         if (serverName != null && !serverName.isBlank()) {
             Map<String, String> footer = new LinkedHashMap<>();
             footer.put("text", serverName);
@@ -80,10 +80,10 @@ public class SignalboxCommand {
     private static String buildTestRawPayload() {
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("event", "test");
-        payload.put("message", "This is a test notification from Create: Signalbox.");
+        payload.put("message", "This is a test notification from Create: Webhooks.");
         payload.put("timestamp", System.currentTimeMillis());
 
-        String serverName = SignalboxConfig.WEBHOOK.serverName.get();
+        String serverName = WebhooksConfig.WEBHOOK.serverName.get();
         if (serverName != null && !serverName.isBlank()) {
             payload.put("serverName", serverName);
         }

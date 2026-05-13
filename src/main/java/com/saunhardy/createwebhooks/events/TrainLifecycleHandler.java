@@ -1,8 +1,8 @@
-package com.saunhardy.createsignalbox.events;
+package com.saunhardy.createwebhooks.events;
 
 import com.google.gson.Gson;
-import com.saunhardy.createsignalbox.config.SignalboxConfig;
-import com.saunhardy.createsignalbox.webhook.WebhookSender;
+import com.saunhardy.createwebhooks.config.WebhooksConfig;
+import com.saunhardy.createwebhooks.webhook.WebhookSender;
 
 import javax.annotation.Nullable;
 import java.time.Instant;
@@ -15,13 +15,13 @@ public class TrainLifecycleHandler {
 
     public static void reportCreated(UUID trainId, String trainName, int carriageCount,
                                      @Nullable UUID owner, @Nullable String ownerName) {
-        if (!SignalboxConfig.TRAIN_LIFECYCLE.creationEnabled.get()) return;
+        if (!WebhooksConfig.TRAIN_LIFECYCLE.creationEnabled.get()) return;
 
         String webhookUrl = resolveWebhookUrl();
         if (webhookUrl == null) return;
 
         String json;
-        if (SignalboxConfig.WEBHOOK.useDiscordFormat.get()) {
+        if (WebhooksConfig.WEBHOOK.useDiscordFormat.get()) {
             json = buildDiscordPayload("Train Created", 0x57F287, trainId, trainName,
                     carriageCount, owner, ownerName);
         } else {
@@ -34,13 +34,13 @@ public class TrainLifecycleHandler {
 
     public static void reportRemoved(UUID trainId, String trainName,
                                      @Nullable UUID owner, @Nullable String ownerName) {
-        if (!SignalboxConfig.TRAIN_LIFECYCLE.deletionEnabled.get()) return;
+        if (!WebhooksConfig.TRAIN_LIFECYCLE.deletionEnabled.get()) return;
 
         String webhookUrl = resolveWebhookUrl();
         if (webhookUrl == null) return;
 
         String json;
-        if (SignalboxConfig.WEBHOOK.useDiscordFormat.get()) {
+        if (WebhooksConfig.WEBHOOK.useDiscordFormat.get()) {
             json = buildDiscordPayload("Train Removed", 0xED4245, trainId, trainName,
                     0, owner, ownerName);
         } else {
@@ -53,9 +53,9 @@ public class TrainLifecycleHandler {
 
     @Nullable
     private static String resolveWebhookUrl() {
-        String webhookUrl = SignalboxConfig.TRAIN_LIFECYCLE.webhookUrl.get();
+        String webhookUrl = WebhooksConfig.TRAIN_LIFECYCLE.webhookUrl.get();
         if (webhookUrl == null || webhookUrl.isBlank()) {
-            webhookUrl = SignalboxConfig.WEBHOOK.webhookUrl.get();
+            webhookUrl = WebhooksConfig.WEBHOOK.webhookUrl.get();
         }
         if (webhookUrl == null || webhookUrl.isBlank()) return null;
         return webhookUrl;
@@ -84,7 +84,7 @@ public class TrainLifecycleHandler {
         embed.put("timestamp", DateTimeFormatter.ISO_INSTANT.format(
                 Instant.now().atOffset(ZoneOffset.UTC)));
 
-        String serverName = SignalboxConfig.WEBHOOK.serverName.get();
+        String serverName = WebhooksConfig.WEBHOOK.serverName.get();
         if (serverName != null && !serverName.isBlank()) {
             Map<String, String> footer = new LinkedHashMap<>();
             footer.put("text", serverName);
@@ -114,7 +114,7 @@ public class TrainLifecycleHandler {
             if (ownerName != null) payload.put("ownerName", ownerName);
         }
 
-        String serverName = SignalboxConfig.WEBHOOK.serverName.get();
+        String serverName = WebhooksConfig.WEBHOOK.serverName.get();
         if (serverName != null && !serverName.isBlank()) {
             payload.put("serverName", serverName);
         }

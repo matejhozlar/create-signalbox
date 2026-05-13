@@ -1,9 +1,9 @@
-package com.saunhardy.createsignalbox.mixin;
+package com.saunhardy.createwebhooks.mixin;
 
 import com.mojang.authlib.GameProfile;
 import com.simibubi.create.content.trains.GlobalRailwayManager;
 import com.simibubi.create.content.trains.entity.Train;
-import com.saunhardy.createsignalbox.events.TrainLifecycleHandler;
+import com.saunhardy.createwebhooks.events.TrainLifecycleHandler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.players.GameProfileCache;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -23,7 +23,7 @@ public abstract class TrainLifecycleMixin {
     @Shadow public Map<UUID, Train> trains;
 
     @Inject(method = "addTrain", at = @At("HEAD"), remap = false)
-    private void createsignalbox$onTrainAdded(Train train, CallbackInfo ci) {
+    private void createwebhooks$onTrainAdded(Train train, CallbackInfo ci) {
         try {
             String trainName = train.name != null ? train.name.getString() : "Unknown";
             int carriageCount = train.carriages != null ? train.carriages.size() : 0;
@@ -37,7 +37,7 @@ public abstract class TrainLifecycleMixin {
     }
 
     @Inject(method = "removeTrain", at = @At("HEAD"), remap = false)
-    private void createsignalbox$onTrainRemoved(UUID id, CallbackInfo ci) {
+    private void createwebhooks$onTrainRemoved(UUID id, CallbackInfo ci) {
         try {
             Train train = this.trains.get(id);
             if (train == null) return;

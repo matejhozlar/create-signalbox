@@ -1,8 +1,8 @@
-package com.saunhardy.createsignalbox;
+package com.saunhardy.createwebhooks;
 
 import com.mojang.logging.LogUtils;
-import com.saunhardy.createsignalbox.commands.SignalboxCommand;
-import com.saunhardy.createsignalbox.config.SignalboxConfig;
+import com.saunhardy.createwebhooks.commands.WebhooksCommand;
+import com.saunhardy.createwebhooks.config.WebhooksConfig;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -11,17 +11,17 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import org.slf4j.Logger;
 
-@Mod(CreateSignalbox.MODID)
-public class CreateSignalbox {
-    public static final String MODID = "createsignalbox";
+@Mod(CreateWebhooks.MODID)
+public class CreateWebhooks {
+    public static final String MODID = "createwebhooks";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public CreateSignalbox(IEventBus modEventBus, ModContainer modContainer) {
-        modContainer.registerConfig(ModConfig.Type.COMMON, SignalboxConfig.SPEC);
+    public CreateWebhooks(IEventBus modEventBus, ModContainer modContainer) {
+        modContainer.registerConfig(ModConfig.Type.COMMON, WebhooksConfig.SPEC);
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
     }
 
     private void onRegisterCommands(RegisterCommandsEvent event) {
-        SignalboxCommand.register(event.getDispatcher());
+        WebhooksCommand.register(event.getDispatcher());
     }
 }

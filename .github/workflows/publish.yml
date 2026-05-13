@@ -35,7 +35,7 @@ jobs:
         with:
           version: ${{ inputs.version }}
           version-type: release
-          name: "[${{ inputs.version }}] Create: Signalbox"
+          name: "[${{ inputs.version }}] Create: Webhooks"
           changelog-file: CHANGELOG.md
           loaders: neoforge
           game-versions: 1.21.1

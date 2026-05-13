@@ -1,11 +1,11 @@
-package com.saunhardy.createsignalbox.mixin;
+package com.saunhardy.createwebhooks.mixin;
 
 import com.mojang.authlib.GameProfile;
 import com.simibubi.create.content.trains.entity.Carriage;
 import com.simibubi.create.content.trains.entity.TravellingPoint;
 import com.simibubi.create.content.trains.entity.Train;
 import com.simibubi.create.content.trains.graph.TrackGraph;
-import com.saunhardy.createsignalbox.events.TrainDerailHandler;
+import com.saunhardy.createwebhooks.events.TrainDerailHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.players.GameProfileCache;
@@ -35,16 +35,16 @@ public abstract class TrainDerailMixin {
     @Shadow public TrackGraph graph;
 
     @Unique
-    private boolean createsignalbox$wasDerailed;
+    private boolean createwebhooks$wasDerailed;
 
     @Inject(method = "tick", at = @At("HEAD"), remap = false)
-    private void createsignalbox$onTickStart(Level level, CallbackInfo ci) {
-        createsignalbox$wasDerailed = this.derailed;
+    private void createwebhooks$onTickStart(Level level, CallbackInfo ci) {
+        createwebhooks$wasDerailed = this.derailed;
     }
 
     @Inject(method = "tick", at = @At("RETURN"), remap = false)
-    private void createsignalbox$onTickEnd(Level level, CallbackInfo ci) {
-        if (createsignalbox$wasDerailed || !this.derailed) return;
+    private void createwebhooks$onTickEnd(Level level, CallbackInfo ci) {
+        if (createwebhooks$wasDerailed || !this.derailed) return;
         if (TrainDerailHandler.consumeCrashed(this.id)) return;
 
         String trainName = this.name != null ? this.name.getString() : "Unknown";

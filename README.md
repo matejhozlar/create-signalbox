@@ -1,11 +1,11 @@
-# Create: Signalbox – Minecraft Webhook Notifications
+# Create: Webhooks – Minecraft Webhook Notifications
 
 ![Minecraft](https://img.shields.io/badge/Minecraft-1.21.1-5E7C16?logo=minecraft&logoColor=white)
 ![NeoForge](https://img.shields.io/badge/NeoForge-21.1.219-orange)
 ![Create](https://img.shields.io/badge/Create-Optional-blue)
-[![Wiki](https://img.shields.io/badge/Wiki-GitHub-lightgrey?logo=github)](https://github.com/saunhardy/create-signalbox/wiki)
+[![Wiki](https://img.shields.io/badge/Wiki-GitHub-lightgrey?logo=github)](https://github.com/matejhozlar/create-webhooks/wiki)
 
-**Create: Signalbox** is a NeoForge mod that sends configurable webhook notifications for in-game events from the [Create](https://github.com/Creators-of-Create/Create) mod. When a train crashes, the mod automatically sends a detailed report to a Discord webhook or any custom API endpoint — no backend server required.
+**Create: Webhooks** is a NeoForge mod that sends configurable webhook notifications for in-game events from the [Create](https://github.com/Creators-of-Create/Create) mod. When a train crashes, the mod automatically sends a detailed report to a Discord webhook or any custom API endpoint — no backend server required.
 
 ---
 
@@ -47,7 +47,7 @@
 ## Configuration
 
 Upon first launch, the mod generates a config file at:
-`/serverconfig/createsignalbox-common.toml`
+`/serverconfig/createwebhooks-common.toml`
 
 ### Webhook Settings (`[webhook]`)
 
@@ -65,7 +65,7 @@ Upon first launch, the mod generates a config file at:
 | `events.trainCrash.enabled` | `true` | Toggle train crash notifications |
 | `events.trainCrash.cooldownSeconds` | `60` | Cooldown before the same train can trigger another notification (0 to disable) |
 
-All settings are also accessible in-game via the mod config screen (Mods → Create: Signalbox → Config).
+All settings are also accessible in-game via the mod config screen (Mods → Create: Webhooks → Config).
 
 ---
 

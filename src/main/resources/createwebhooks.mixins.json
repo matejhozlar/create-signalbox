@@ -1,8 +1,8 @@
 {
     "required": false,
-    "package": "com.saunhardy.createsignalbox.mixin",
+    "package": "com.saunhardy.createwebhooks.mixin",
     "compatibilityLevel": "JAVA_21",
-    "plugin": "com.saunhardy.createsignalbox.mixin.CreateMixinPlugin",
+    "plugin": "com.saunhardy.createwebhooks.mixin.CreateMixinPlugin",
     "mixins": [
         "TrainCrashMixin",
         "TrainDerailMixin",

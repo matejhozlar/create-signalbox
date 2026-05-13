@@ -1,4 +1,4 @@
-package com.saunhardy.createsignalbox.mixin;
+package com.saunhardy.createwebhooks.mixin;
 
 import net.neoforged.fml.loading.LoadingModList;
 import org.objectweb.asm.tree.ClassNode;

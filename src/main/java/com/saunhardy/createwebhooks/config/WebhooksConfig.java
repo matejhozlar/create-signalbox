@@ -1,8 +1,8 @@
-package com.saunhardy.createsignalbox.config;
+package com.saunhardy.createwebhooks.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-public class SignalboxConfig {
+public class WebhooksConfig {
     public static final WebhookConfig WEBHOOK;
     public static final TrainCrashConfig TRAIN_CRASH;
     public static final TrainDerailConfig TRAIN_DERAIL;

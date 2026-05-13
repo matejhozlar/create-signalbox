@@ -1,12 +1,12 @@
-package com.saunhardy.createsignalbox.mixin;
+package com.saunhardy.createwebhooks.mixin;
 
 import com.mojang.authlib.GameProfile;
 import com.simibubi.create.content.trains.entity.Carriage;
 import com.simibubi.create.content.trains.entity.TravellingPoint;
 import com.simibubi.create.content.trains.entity.Train;
 import com.simibubi.create.content.trains.graph.TrackGraph;
-import com.saunhardy.createsignalbox.events.TrainCrashHandler;
-import com.saunhardy.createsignalbox.events.TrainDerailHandler;
+import com.saunhardy.createwebhooks.events.TrainCrashHandler;
+import com.saunhardy.createwebhooks.events.TrainDerailHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.players.GameProfileCache;
@@ -35,7 +35,7 @@ public abstract class TrainCrashMixin {
     @Shadow public TrackGraph graph;
 
     @Inject(method = "crash", at = @At("HEAD"), remap = false)
-    private void createsignalbox$onTrainCrash(CallbackInfo ci) {
+    private void createwebhooks$onTrainCrash(CallbackInfo ci) {
         if (this.derailed) return;
 
         TrainDerailHandler.markCrashed(this.id);

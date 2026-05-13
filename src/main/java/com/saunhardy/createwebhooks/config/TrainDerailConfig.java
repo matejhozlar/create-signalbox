@@ -1,4 +1,4 @@
-package com.saunhardy.createsignalbox.config;
+package com.saunhardy.createwebhooks.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 

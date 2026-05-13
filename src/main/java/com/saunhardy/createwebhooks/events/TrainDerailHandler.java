@@ -1,8 +1,8 @@
-package com.saunhardy.createsignalbox.events;
+package com.saunhardy.createwebhooks.events;
 
 import com.google.gson.Gson;
-import com.saunhardy.createsignalbox.config.SignalboxConfig;
-import com.saunhardy.createsignalbox.webhook.WebhookSender;
+import com.saunhardy.createwebhooks.config.WebhooksConfig;
+import com.saunhardy.createwebhooks.webhook.WebhookSender;
 
 import javax.annotation.Nullable;
 import java.time.Instant;
@@ -28,15 +28,15 @@ public class TrainDerailHandler {
                                         int carriageCount, @Nullable double[] position,
                                         @Nullable String dimension,
                                         @Nullable UUID owner, @Nullable String ownerName) {
-        if (!SignalboxConfig.TRAIN_DERAIL.enabled.get()) return;
+        if (!WebhooksConfig.TRAIN_DERAIL.enabled.get()) return;
 
-        String webhookUrl = SignalboxConfig.TRAIN_DERAIL.webhookUrl.get();
+        String webhookUrl = WebhooksConfig.TRAIN_DERAIL.webhookUrl.get();
         if (webhookUrl == null || webhookUrl.isBlank()) {
-            webhookUrl = SignalboxConfig.WEBHOOK.webhookUrl.get();
+            webhookUrl = WebhooksConfig.WEBHOOK.webhookUrl.get();
         }
         if (webhookUrl == null || webhookUrl.isBlank()) return;
 
-        int cooldown = SignalboxConfig.TRAIN_DERAIL.cooldownSeconds.get();
+        int cooldown = WebhooksConfig.TRAIN_DERAIL.cooldownSeconds.get();
         if (cooldown > 0) {
             long now = System.currentTimeMillis();
             Long lastReport = COOLDOWNS.get(trainId);
@@ -45,7 +45,7 @@ public class TrainDerailHandler {
         }
 
         String json;
-        if (SignalboxConfig.WEBHOOK.useDiscordFormat.get()) {
+        if (WebhooksConfig.WEBHOOK.useDiscordFormat.get()) {
             json = buildDiscordPayload(trainName, speed, carriageCount, position, dimension,
                     owner, ownerName);
         } else {
@@ -87,7 +87,7 @@ public class TrainDerailHandler {
         embed.put("timestamp", DateTimeFormatter.ISO_INSTANT.format(
                 Instant.now().atOffset(ZoneOffset.UTC)));
 
-        String serverName = SignalboxConfig.WEBHOOK.serverName.get();
+        String serverName = WebhooksConfig.WEBHOOK.serverName.get();
         if (serverName != null && !serverName.isBlank()) {
             Map<String, String> footer = new LinkedHashMap<>();
             footer.put("text", serverName);
@@ -128,7 +128,7 @@ public class TrainDerailHandler {
             if (ownerName != null) payload.put("ownerName", ownerName);
         }
 
-        String serverName = SignalboxConfig.WEBHOOK.serverName.get();
+        String serverName = WebhooksConfig.WEBHOOK.serverName.get();
         if (serverName != null && !serverName.isBlank()) {
             payload.put("serverName", serverName);
         }
